@@ -1,0 +1,166 @@
+[
+  {
+    "namespace": "ewsBridge",
+    "description": "Privileged helpers for EWS Bridge: loopback sockets, authenticated HTTP, secrets and Thunderbird account wiring.",
+    "functions": [
+      {
+        "name": "listen",
+        "type": "function",
+        "async": true,
+        "description": "Listen on 127.0.0.1. Port 0 picks a free port. Resolves to {serverId, port}.",
+        "parameters": [{ "name": "port", "type": "integer" }]
+      },
+      {
+        "name": "rememberPorts",
+        "type": "function",
+        "async": true,
+        "description": "Remember the gateway ports so they can be bound at the next startup.",
+        "parameters": [{ "name": "ports", "type": "object", "additionalProperties": { "type": "any" } }]
+      },
+      {
+        "name": "stopListening",
+        "type": "function",
+        "async": true,
+        "parameters": [{ "name": "serverId", "type": "integer" }]
+      },
+      {
+        "name": "write",
+        "type": "function",
+        "async": true,
+        "description": "Write a binary string (one byte per char) to a connection.",
+        "parameters": [
+          { "name": "connId", "type": "integer" },
+          { "name": "data", "type": "string" }
+        ]
+      },
+      {
+        "name": "closeConnection",
+        "type": "function",
+        "async": true,
+        "parameters": [{ "name": "connId", "type": "integer" }]
+      },
+      {
+        "name": "httpRequest",
+        "type": "function",
+        "async": true,
+        "description": "HTTP request with NTLM/Negotiate/Basic handled by Gecko using stored credentials.",
+        "parameters": [{ "name": "request", "type": "object", "additionalProperties": { "type": "any" } }]
+      },
+      {
+        "name": "setCredentials",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          { "name": "accountKey", "type": "string" },
+          { "name": "credentials", "type": "object", "additionalProperties": { "type": "any" } }
+        ]
+      },
+      {
+        "name": "clearCredentials",
+        "type": "function",
+        "async": true,
+        "parameters": [{ "name": "accountKey", "type": "string" }]
+      },
+      {
+        "name": "storeSecret",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          { "name": "name", "type": "string" },
+          { "name": "username", "type": "string" },
+          { "name": "secret", "type": "string" }
+        ]
+      },
+      {
+        "name": "loadSecret",
+        "type": "function",
+        "async": true,
+        "parameters": [{ "name": "name", "type": "string" }]
+      },
+      {
+        "name": "deleteSecret",
+        "type": "function",
+        "async": true,
+        "parameters": [{ "name": "name", "type": "string" }]
+      },
+      {
+        "name": "randomToken",
+        "type": "function",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "configureAccount",
+        "type": "function",
+        "async": true,
+        "description": "Create (or update) the IMAP/SMTP account, identity, CalDAV calendars and CardDAV address books pointing at the gateway.",
+        "parameters": [{ "name": "config", "type": "object", "additionalProperties": { "type": "any" } }]
+      },
+      {
+        "name": "updatePorts",
+        "type": "function",
+        "async": true,
+        "parameters": [{ "name": "config", "type": "object", "additionalProperties": { "type": "any" } }]
+      },
+      {
+        "name": "fixIdentityFolders",
+        "type": "function",
+        "async": true,
+        "parameters": [{ "name": "email", "type": "string" }]
+      },
+      {
+        "name": "removeAccount",
+        "type": "function",
+        "async": true,
+        "parameters": [{ "name": "config", "type": "object", "additionalProperties": { "type": "any" } }]
+      },
+      {
+        "name": "kickSync",
+        "type": "function",
+        "async": true,
+        "parameters": [{ "name": "email", "type": "string" }]
+      },
+      {
+        "name": "accountExists",
+        "type": "function",
+        "async": true,
+        "parameters": [{ "name": "email", "type": "string" }]
+      },
+      {
+        "name": "listTags",
+        "type": "function",
+        "async": true,
+        "parameters": []
+      },
+      {
+        "name": "ensureTag",
+        "type": "function",
+        "async": true,
+        "parameters": [{ "name": "name", "type": "string" }]
+      }
+    ],
+    "events": [
+      {
+        "name": "onConnection",
+        "type": "function",
+        "parameters": [
+          { "name": "serverId", "type": "integer" },
+          { "name": "connId", "type": "integer" }
+        ]
+      },
+      {
+        "name": "onData",
+        "type": "function",
+        "parameters": [
+          { "name": "connId", "type": "integer" },
+          { "name": "data", "type": "string" }
+        ]
+      },
+      {
+        "name": "onClosed",
+        "type": "function",
+        "parameters": [{ "name": "connId", "type": "integer" }]
+      }
+    ]
+  }
+]

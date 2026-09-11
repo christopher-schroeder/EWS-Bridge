@@ -1,0 +1,4 @@
+{
+  "extName": { "message": "EWS Bridge" },
+  "extDescription": { "message": "Use Microsoft Exchange (EWS) mail, calendar, contacts and the global address list in Thunderbird through a local gateway." }
+}

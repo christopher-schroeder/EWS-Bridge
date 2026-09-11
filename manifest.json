@@ -1,0 +1,37 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extName__",
+  "description": "__MSG_extDescription__",
+  "version": "0.9.0",
+  "author": "Christopher Schroeder",
+  "default_locale": "en",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ews-bridge@schroeder.tu-dortmund.de",
+      "strict_min_version": "128.0"
+    }
+  },
+  "icons": {
+    "32": "icons/bridge.svg",
+    "64": "icons/bridge.svg"
+  },
+  "background": {
+    "page": "background.html"
+  },
+  "options_ui": {
+    "page": "ui/options.html",
+    "open_in_tab": true
+  },
+  "permissions": ["addressBooks", "storage"],
+  "experiment_apis": {
+    "ewsBridge": {
+      "schema": "experiments/bridge/schema.json",
+      "parent": {
+        "scopes": ["addon_parent"],
+        "events": ["startup"],
+        "paths": [["ewsBridge"]],
+        "script": "experiments/bridge/parent.js"
+      }
+    }
+  }
+}
