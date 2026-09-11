@@ -3,6 +3,10 @@
  * Thunderbird uses IANA IDs ("Europe/Berlin"). Mapping follows CLDR
  * windowsZones (territory 001 = primary zone). Conversions use Intl, which
  * carries the full tz database in both Gecko and Deno.
+ *
+ * WINDOWS_TO_IANA below is derived from the Unicode CLDR windowsZones table:
+ * Copyright (C) 1991-2024 Unicode, Inc. Distributed under the Terms of Use
+ * at https://www.unicode.org/copyright.html
  */
 
 export const WINDOWS_TO_IANA = {

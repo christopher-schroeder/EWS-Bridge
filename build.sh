@@ -9,7 +9,7 @@ rm -f "$OUT"
 python3 - "$OUT" <<'PY'
 import os, sys, zipfile
 out = sys.argv[1]
-include = ["manifest.json", "background.html", "background.js", "core", "platform", "experiments", "ui", "icons", "_locales"]
+include = ["manifest.json", "LICENSE", "background.html", "background.js", "core", "platform", "experiments", "ui", "icons", "_locales"]
 with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
     for item in include:
         if os.path.isfile(item):

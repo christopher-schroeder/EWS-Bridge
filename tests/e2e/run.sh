@@ -60,7 +60,7 @@ user_pref("extensions.logging.enabled", true);
 // A profile without any mail account blocks extension startup until the
 // account wizard completes; this skips the wizard.
 user_pref("app.use_without_mail_account", true);
-user_pref("extensions.exchangebridge.debug", true);
+user_pref("extensions.ewsbridge.debug", true);
 EOF
 
 deno run -A "$ROOT/tests/e2e/server.mjs" "$PORT" "$WORK/report.json" > "$WORK/server.log" 2>&1 &

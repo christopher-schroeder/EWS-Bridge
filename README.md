@@ -133,4 +133,18 @@ E2E_WAYLAND=wl-e2e tests/e2e/run.sh
 ```
 
 Opt-in tracing of the socket layer: set the pref
-`extensions.exchangebridge.debug` to `true` (output on stdout).
+`extensions.ewsbridge.debug` to `true` (output on stdout).
+
+## License
+
+MIT — see [LICENSE](LICENSE). Copyright (c) 2026 Christopher Schroeder.
+
+Written from scratch; the add-on contains no code from Thunderbird, from
+"Owl for Exchange" or from ExQuilla. The Windows-to-IANA time zone table in
+`core/cal/tz.mjs` is derived from the Unicode CLDR `windowsZones` data,
+Copyright (C) 1991-2024 Unicode, Inc., distributed under the
+[Unicode Terms of Use](https://www.unicode.org/copyright.html).
+
+Microsoft, Exchange and Outlook are trademarks of Microsoft Corporation.
+This project is not affiliated with or endorsed by Microsoft or by MZLA
+Technologies Corporation.

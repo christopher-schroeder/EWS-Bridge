@@ -34,15 +34,15 @@ ChromeUtils.defineLazyGetter(lazy, "CardDAVDirectory", () => ChromeUtils.importE
 
 const LOCALHOST = "127.0.0.1";
 
-/** Opt-in tracing to stdout: set extensions.exchangebridge.debug = true. */
+/** Opt-in tracing to stdout: set extensions.ewsbridge.debug = true. */
 function trace(msg) {
-  if (Services.prefs.getBoolPref("extensions.exchangebridge.debug", false)) {
+  if (Services.prefs.getBoolPref("extensions.ewsbridge.debug", false)) {
     dump(`[ews-bridge] ${msg}\n`);
   }
 }
 const DAV_REALM = "EWS Bridge";
 const SECRET_ORIGIN = "ews-bridge://secrets";
-const PORTS_PREF = "extensions.exchangebridge.ports";
+const PORTS_PREF = "extensions.ewsbridge.ports";
 
 // --------------------------------------------------------------------------
 // Sockets
