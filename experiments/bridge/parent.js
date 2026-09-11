@@ -34,6 +34,31 @@ ChromeUtils.defineLazyGetter(lazy, "CardDAVDirectory", () => ChromeUtils.importE
 
 const LOCALHOST = "127.0.0.1";
 
+/* Kerberos/Negotiate trust list. This pref is global to Thunderbird, so every
+ * host we add has to come back out again — on logout, on account removal and
+ * on shutdown. An entry left behind would keep Thunderbird willing to send
+ * tickets to that host long after the add-on is gone. */
+
+function negotiateHosts() {
+  return Services.prefs.getStringPref(NEGOTIATE_PREF, "").split(",").map(s => s.trim()).filter(Boolean);
+}
+
+function trustNegotiateHost(host) {
+  const list = negotiateHosts();
+  if (!list.includes(host)) {
+    list.push(host);
+    Services.prefs.setStringPref(NEGOTIATE_PREF, list.join(","));
+  }
+}
+
+function untrustNegotiateHost(host) {
+  const list = negotiateHosts();
+  const rest = list.filter(h => h != host);
+  if (rest.length != list.length) {
+    Services.prefs.setStringPref(NEGOTIATE_PREF, rest.join(","));
+  }
+}
+
 /** Opt-in tracing to stdout: set extensions.ewsbridge.debug = true. */
 function trace(msg) {
   if (Services.prefs.getBoolPref("extensions.ewsbridge.debug", false)) {
@@ -41,6 +66,7 @@ function trace(msg) {
   }
 }
 const DAV_REALM = "EWS Bridge";
+const NEGOTIATE_PREF = "network.negotiate-auth.trusted-uris";
 const SECRET_ORIGIN = "ews-bridge://secrets";
 const PORTS_PREF = "extensions.ewsbridge.ports";
 
@@ -201,6 +227,13 @@ function httpRequest(req, creds) {
       const uri = Services.io.newURI(req.url);
       if (uri.scheme != "https" && uri.scheme != "http") {
         throw new Error("Only http(s) URLs are supported");
+      }
+      // Plaintext channels never see the password. The Autodiscover HTTP
+      // redirect probe talks to a host name that comes from DNS, and a 401
+      // there would otherwise make Gecko answer a Basic challenge with the
+      // credentials in the clear.
+      if (uri.scheme != "https") {
+        creds = null;
       }
       channel = NetUtil.newChannel({
         uri,
@@ -632,6 +665,7 @@ this.ewsBridge = class extends ExtensionAPI {
     this.servers = new Map();
     this.connections = new Map();
     this.credentials = new Map();
+    this.trustedHosts = new Map(); // accountKey -> host added to NEGOTIATE_PREF
     this.nextId = 1;
     this.listeners = { connection: new Set(), data: new Set(), closed: new Set() };
     this.backlog = []; // events fired before the background registered listeners
@@ -696,7 +730,23 @@ this.ewsBridge = class extends ExtensionAPI {
     }
   }
 
+  /** Remove this account's host from the Negotiate trust list, unless another
+   *  account still needs it. */
+  dropTrustedHost(accountKey) {
+    const host = this.trustedHosts.get(accountKey);
+    if (!host) {
+      return;
+    }
+    this.trustedHosts.delete(accountKey);
+    if (![...this.trustedHosts.values()].includes(host)) {
+      untrustNegotiateHost(host);
+    }
+  }
+
   onShutdown() {
+    for (const key of [...this.trustedHosts.keys()]) {
+      this.dropTrustedHost(key);
+    }
     for (const c of this.connections.values()) {
       c.destroy();
     }
@@ -773,12 +823,11 @@ this.ewsBridge = class extends ExtensionAPI {
           const prev = self.credentials.get(accountKey);
           self.credentials.set(accountKey, { ...credentials });
           if (credentials.authMethod == "negotiate" && credentials.host) {
-            const pref = "network.negotiate-auth.trusted-uris";
-            const list = Services.prefs.getStringPref(pref, "").split(",").map(s => s.trim()).filter(Boolean);
-            if (!list.includes(credentials.host)) {
-              list.push(credentials.host);
-              Services.prefs.setStringPref(pref, list.join(","));
-            }
+            self.dropTrustedHost(accountKey);
+            trustNegotiateHost(credentials.host);
+            self.trustedHosts.set(accountKey, credentials.host);
+          } else {
+            self.dropTrustedHost(accountKey);
           }
           if (prev && (prev.username != credentials.username || prev.password != credentials.password)) {
             // Forget connection-bound NTLM/Negotiate state from the old identity.
@@ -788,6 +837,7 @@ this.ewsBridge = class extends ExtensionAPI {
 
         async clearCredentials(accountKey) {
           self.credentials.delete(accountKey);
+          self.dropTrustedHost(accountKey);
           Services.obs.notifyObservers(null, "net:clear-active-logins");
         },
 

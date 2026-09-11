@@ -33,7 +33,7 @@ offers.
 
 ## Install
 
-1. Build the package: `./build.sh` → `dist/ews-bridge-0.9.0.xpi`.
+1. Build the package: `./build.sh` → `dist/ews-bridge-1.0.0.xpi`.
 2. In Thunderbird, open *Add-ons and Themes*, click ⚙ and choose
    *Install Add-on From File…*, then pick the `.xpi`.
 3. The settings page opens. Enter your e-mail address and password, click

@@ -2,13 +2,15 @@
   "manifest_version": 2,
   "name": "__MSG_extName__",
   "description": "__MSG_extDescription__",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "author": "Christopher Schroeder",
+  "homepage_url": "https://github.com/christopher-schroeder/EWS-Bridge",
   "default_locale": "en",
   "browser_specific_settings": {
     "gecko": {
       "id": "ews-bridge@schroeder.tu-dortmund.de",
-      "strict_min_version": "128.0"
+      "strict_min_version": "140.0",
+      "strict_max_version": "155.*"
     }
   },
   "icons": {

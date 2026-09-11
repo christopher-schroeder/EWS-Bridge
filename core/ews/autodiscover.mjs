@@ -80,7 +80,10 @@ export async function autodiscover(email, transport, { log = null } = {}) {
       `https://${domain}/autodiscover/autodiscover.xml`,
       `https://autodiscover.${domain}/autodiscover/autodiscover.xml`,
     ];
-    // HTTP redirect method: GET http://autodiscover.domain/... answers with a 302 to an https URL.
+    // HTTP redirect method: GET http://autodiscover.domain/... answers with a
+    // 302 to an https URL. This is the one plaintext request we make. It sends
+    // no credentials (the platform layer withholds them from non-https
+    // channels), carries no body, and only an https:// Location is followed.
     let redirectedUrl = null;
     let result = null;
     for (const url of urls) {
